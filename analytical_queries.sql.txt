@@ -1,0 +1,26 @@
+SELECT 
+    Churn,
+    COUNT(customerID) AS total_customers,
+    ROUND(AVG(MonthlyCharges), 2) AS avg_monthly_charges
+FROM churn_data
+GROUP BY Churn;
+
+SELECT 
+    Contract,
+    COUNT(customerID) AS total_customers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS churned_count,
+    ROUND(100.0 * SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) / COUNT(customerID), 2) AS churn_rate_percent
+FROM churn_data
+GROUP BY Contract
+ORDER BY churn_rate_percent DESC;
+
+SELECT 
+    InternetService,
+    PaymentMethod,
+    COUNT(customerID) AS total_customers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS churned_count,
+    ROUND(100.0 * SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) / COUNT(customerID), 2) AS churn_rate_percent
+FROM churn_data
+GROUP BY InternetService, PaymentMethod
+HAVING total_customers > 100
+ORDER BY churn_rate_percent DESC;
